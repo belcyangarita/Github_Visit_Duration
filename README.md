@@ -1,6 +1,5 @@
-# Feeding_Duration_pigs
-This repository contains codes and data needed to reproduce results in Angarita Barajas et al. Estimation of direct and social effects of feeding duration in growing pigs using   record from automatic feeding stations.
 # Direct and social effects of feeding duration in pigs 
+This repository contains codes and data needed to reproduce results in Angarita Barajas et al. Estimation of direct and social effects of feeding duration in growing pigs using   record from automatic feeding stations.
 
 > To fit different mixed models to estimate direct and social effects on the feeding time (visit length) of group-housed pigs.
 
