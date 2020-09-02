@@ -56,10 +56,11 @@ The repository [Github_Visit_Duration](https://github.com/belcyangarita/Github_V
 
 The files within the above mentioned folders have the follow exentions:
 * *.R*: R code workflow, used to fit the different models, estimate the model parameters and generate the outputs objects (*.Rdata*) 
-* *.Rmd* R Markdown code to generate the report with the results
+* *.Rmd*: R Markdown code to generate the report with the results
 * *.Rdata*: files are specific to R, which have the output objects to obtain the principal results
 * *.rds*: file generated after compile the .stan files
 * *.stan*: Stan program for write the model in a text file
+* *.html*: output file from R Markdown codes
 
 ### Run workflow
 1. Bayesian estimation of covariance components:
