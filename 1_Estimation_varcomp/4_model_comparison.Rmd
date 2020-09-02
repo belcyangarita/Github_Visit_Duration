@@ -1,0 +1,51 @@
+---
+title: "Model comparison"
+output: html_document
+---
+
+This document contains the code and data to make the model comparison on Estimation of direct and social effects of feeding duration in growing pigs using record from automatic feeding stations.
+
+$The\ Model\ comparison\ was\ done\ trough\ information\ criterion\ (WAIC)$
+
+$The\ matrix\ to\ each\ model\ contain:\\ elpd_{waic}:\ expected\ log\ predictive\ pointwise\ density\\p_{waic}:\ effective\ number\ of\ parameters\\ waic:\ information\ ciretion\ converted\ to\ deviance\ scale=\ -2*elpd_{waic}$
+
+```{r setup, include=FALSE}
+rm(list = ls())
+setwd("~/Documents/Github_Visit_Duration/1_Estimation_varcomp")
+
+# 1. Load libraries and data file
+library(tidyverse)
+library(dplyr)
+library(car)
+library(ggplot2)
+library(kableExtra)
+library(rstan)
+library(loo)
+
+# 2. Load Input files:  R object class "waic" "loo" 
+# 2.1. R objects obtained from fit models with Immediate replacement subset (IRT)
+load("m1_60s_waic.Rdata") # M1
+load("m2_60s_waic.Rdata") # M2
+load("m3_60s_waic.Rdata") # M3
+
+# 2.2. R objects obtained from fit models with No immediate replacement subset (NIRT)
+load("m1_600swo_waic.Rdata") # M1
+load("m2_600swo_waic.Rdata") # M2
+load("m3_600swo_waic.Rdata") # M3
+
+```
+  
+## 1. Immediate replacement time (IRT) subset
+
+```{r}
+a<-loo_compare(m1.60s.waic,m2.60s.waic, m3.60s.waic)[,1:8]
+kable(a,caption = "WAIC Model comparison with Immediate replacement (IRT) subset")%>%
+  kable_styling(bootstrap_options = c("striped"),full_width = F, position = "left",font_size = 14)%>%column_spec(1, bold = T)
+```
+
+## 2. No immediate replacement time (NIRT) subset
+```{r}
+a<-loo_compare(m1.600swo.waic,m2.600swo.waic, m3.600swo.waic)[,1:8]
+kable(a,caption = "WAIC Model comparison with No immediate replacement (NIRT) subset")%>%
+  kable_styling(bootstrap_options = c("striped"),full_width = F, position = "left",font_size = 14)%>%column_spec(1, bold = T)
+```
