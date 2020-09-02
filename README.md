@@ -10,7 +10,7 @@
 5. [Acknowledgements](#Acknowledgements])
 6. [Contact](#contact)
 
-## General info
+## General information
 This repository contains codes and data needed to reproduce results in the bayesian estimation of covariance componentes fitting
  three different models on feeding duration trait and to calculate the correlation between feeding duration and production traits.
 
