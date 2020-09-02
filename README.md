@@ -1,5 +1,4 @@
 # Direct and social effects of feeding duration in pigs 
-This repository contains codes and data needed to reproduce results in Angarita Barajas et al. Estimation of direct and social effects of feeding duration in growing pigs using   record from automatic feeding stations.
 
 > To fit different mixed models to estimate direct and social effects on the feeding time (visit length) of group-housed pigs.
 
@@ -19,7 +18,7 @@ This repository contains codes and data needed to reproduce results in the bayes
   record from automatic feeding stations.
 
 ## Technologies
-1. R - version 3.5.1
+1. [R](https://www.r-project.org/) - version 3.5.1
 
 #### Libraries
 * tidyverse - version 1.2.1
@@ -30,9 +29,10 @@ This repository contains codes and data needed to reproduce results in the bayes
 * ggmcmc
 * kableExtra - version 1.1.0
 
-2. Stan language
+2. [Stan](http://mc-stan.org/) language
 
 * Stan website at http://mc-stan.org/
+
 
 ## Run Examples
 The **global workflow** to reproduce the results is:
@@ -40,7 +40,7 @@ The **global workflow** to reproduce the results is:
 1. Estimation of covariance componentes fitting three different models on feeding duration trait. 
 2. Calculate the correlation between feeding duration and production traits.
 
-Therefore, **it is very important to follow the order that is described:**
+Therefore, **it is very important to follow the order that is described and and take into account the warnings:** :warning:
 
 
 ### Features
@@ -54,9 +54,18 @@ The repository [Github_Visit_Duration](https://github.com/belcyangarita/Github_V
 * [trialsdata.Rdata](https://github.com/belcyangarita/Github_Visit_Duration)
 
 The files within the above mentioned folders have the follow exentions:
-* *.R*
-* *.Rmd*
-* *.Rdata*
-* *.rds*
-* *.stan*
-:exclamation:
+* *.R*: R code workflow, used to fit the different models, estimate the model parameters and generate the outputs objects (*.Rdata*) 
+* *.Rmd* R Markdown code to generate the report with the results
+* *.Rdata*: files are specific to R, which have the output objects to obtain the principal results
+* *.rds*: file generated after compile the .stan files
+* *.stan*: Stan program for write the model in a text file
+
+### Run workflow
+1. Byesian estimation of covariance components
+	**1.** To fit the models and obtain the samples for posterior parameters it must execute the code [1_Samplig_parameters.R](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp). **IMPORTANT WARNING:** :warning: it is recommended not to run this code as it takes a long time to run and you need to have access to High Performance Computing.
+	**2.** To determine the convergence of the Markov's chains it must execute the code [2_Convergence_Diagnostics.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
+	**3.** To obtain the pointwise-loglikelihood and compute the widely available information criterion (WAIC) to compare models it must execute the code [3_pointwise_loglikelihood.R](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp). **IMPORTANT WARNING:** :warning: it is recommended not to run this code as it takes a long time to run and you need to have access to High Performance Computing.
+	**4.** To make the model comparison it must execute the code [4_model_comparison.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
+
+2. Calculate the correlation between feeding duration and production traits.
+ 	**1.** To obtain the estimates correlations between feeding duration and production traits it must be executed the code [1_Correlations_between_traits.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
