@@ -41,7 +41,7 @@ The **global workflow** to reproduce the results is:
 1. Estimation of covariance componentes fitting three different models on feeding duration trait. 
 2. Calculate the correlation between feeding duration and production traits.
 
-Therefore, **it is very important to follow the order that is described and and take into account the warnings:** :warning:
+Therefore, **it is very important to follow the order that is described and take into account the warnings:** :warning:
 
 
 ### Features
