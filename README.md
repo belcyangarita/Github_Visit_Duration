@@ -79,8 +79,8 @@ The files within the above mentioned folders have the follow exentions:
 
 
 ## Acknowledgements
-This work is supported by Agriculture and Food Research Initiative Awards number 2017-67007-26176 and 2014-68004-21952from the USDA National Institute of Food and Agriculture. Additional support for this work was provided by grants from the National Pork Board Award number 17-023, the Michigan Alliance for Animal Agriculture and Michigan State University. The authors acknowledge Kevin Turner and staff at the Swine Teaching and Research Center for the animal care and assistance with data collection
+> This work is supported by Agriculture and Food Research Initiative Awards number 2017-67007-26176 and 2014-68004-21952 from the USDA National Institute of Food and Agriculture. Additional support for this work was provided by grants from the National Pork Board Award number 17-023, the Michigan Alliance for Animal Agriculture and Michigan State University. The authors acknowledge Kevin Turner and staff at the Swine Teaching and Research Center for the animal care and assistance with data collection
 
 
 ## Contact
-Corresponding author: steibelj@msu.edu
+> Corresponding author: steibelj@msu.edu
