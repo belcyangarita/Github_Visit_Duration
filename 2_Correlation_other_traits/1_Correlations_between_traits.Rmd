@@ -1,0 +1,238 @@
+---
+title: "Analysis REML on visit duration and correlations with productions traits"
+output: html_document
+---
+
+```{r, include=FALSE}
+rm(list = ls())
+setwd("~/Documents/Github_Visit_Duration/2_Correlation_other_traits/")
+# 1. load libraries 
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(lme4)
+library(lmerTest)
+library(car)
+library(ggplot2)
+library(kableExtra)
+# 2. Load data file
+load("../trialsdata.Rdata")
+
+```
+
+The predicted BLUP of direct and social random effects in model with data from immediate replacements ($IRT$) was correlated to weight gain $(WG)$, average feed intake $(AFI)$, and daily feeder occupation time $(FOT)$. The estimated Pearson correlation coefficients $(\hat{r})$ between pairs of traits and their associated p-values are displayed in the table at the end of the document.
+
+#### 1. Fit the mixed model (M2) on feeding duration with IRT subset
+
+The Mixed model fitted on visit length at the feeder with $IRT$ subset was: 
+
+$$y=X\beta + Zu + Z_fa_f + e$$ 
+Where, $y$ is a $n x 1$ vector  of  visit  length  at the  feeder  (minutes), $X\beta$ are the fixed effects, $location-trial \ (12)$, $hour \ entry \ at \ the \ feeder \ (23)$ and $animal \ median \ weigth$ as covariate; $Z$ is a $n$ x $q$ desing matrix ($q$ is the number of pigs) relates records in $y$ to the random vector of additive genetic effects $u$ ($q$ x $1$); $Z_f$ is the design matrix of the next individual that visited the feeder, named $followers$, relating to $y$ with the random vector effects $a_f$ ($q$ x $1$) and $e$ ($n$ x $1$) is the random residuals vector.
+
+```{r, include=FALSE}
+# 1. Fit the mixed linear model
+tn<-60
+trials60.data<-trials.data%>%filter(to_next<=tn)
+dim(trials60.data)
+m2.60s<-lmer(visit.length ~ Loc_trial -1 + hour_entry+ wt_median+
+           (1|Eartag_trial)+(1|follower_trial),data=trials60.data)
+# 2. Get BLUPs random effects
+Blups<-ranef(m2.60s)
+# 2.1. Get BLUP Eartag
+EarBlup<-Blups$Eartag_trial%>%mutate(ID=rownames(Blups$Eartag_trial))
+colnames(EarBlup)<-c("EarBLUP", "ID")
+# 2.2. Get BLUP Follower
+FollBlup<-Blups$follower%>%mutate(ID=rownames(Blups$follower_trial))
+colnames(FollBlup)<-c("FollBLUP", "ID")
+BlupEF<-left_join(EarBlup,FollBlup)%>%select(ID, EarBLUP, FollBLUP)
+```
+
+
+#### 2. Fit the Random regression model on median weight
+
+The random regression model fitted on median weight in each trial in escalar notation is:
+
+$$y_{ij}= \beta_0 + \beta_1x_{ij} + u_{0i} + u_{1i}x_{ij} + e_{ij}$$
+
+Where:$y_{ij}$ is the median weight for $ith$ animal, $\beta_{0}, \beta_1$ are the fixed intercept and slope, $u_{0i}$ is the animal random effect, $ u_{1i}$ is the random slope over time for each animal,$x_{ij}$ is the corresponding time of measurement and $e_{ij}$ is the random error.
+
+```{r, include=FALSE}
+
+# 2.1. Animal Median weight by day data
+
+# Initial median weigth 
+wi<-trials.data%>%filter(trial.day==min(trial.day))%>%
+  group_by(Loc_trial,Eartag_trial)%>%
+  summarize(initial.weight=median(Weight))%>%ungroup()
+# End day by trial
+enday<-trials.data%>%group_by(Loc_trial, Eartag_trial)%>%
+  summarise(enday=max(trial.day))%>%ungroup()
+# End median weight
+we<-left_join(trials.data,enday,by=c("Loc_trial","Eartag_trial"))%>%
+  filter((trial.day==(enday)))%>%
+  group_by(Loc_trial,Eartag_trial)%>%summarize(weight.end=median(Weight))%>%
+  ungroup()
+
+outp1<-left_join(wi,we)%>%left_join(.,enday)%>%
+  mutate(startday=rep(8,nrow(.)), total.days=enday-startday)
+outp1<-left_join(outp1, BlupEF, by=c("Eartag_trial"="ID"))
+
+AmWT.day<-trials.data%>%group_by(Loc_trial,Eartag_trial,trial.day)%>%
+  summarize(weightmd.day=median(Weight))%>%
+  ungroup()%>%as.data.frame()
+
+# 2.2. Ramdom regresion model of median weight 
+mod_gr<-lmer(weightmd.day ~ 1+Loc_trial*trial.day+
+       (trial.day| Eartag_trial), data = AmWT.day,
+     control=lmerControl(optCtrl=list(maxfun=50000)))
+# Estimates
+b<-summary(mod_gr)
+b$coefficients%>%as.data.frame()%>%kable(caption = "Estimates of fixed effects random regression model")%>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F, position = "left",font_size = 12)
+# Variances
+print(VarCorr(mod_gr), comp="Variance")
+
+# fixed effects intercept and slope by trial
+fxeff<-as.matrix(summary(mod_gr)$coef[,1])
+fxeff<-tibble(Loc_trial=rownames(fxeff)[1:14],
+              intercept.rr=fxeff[1:14,],slope.rr=fxeff[15:28,])%>%
+        mutate(.,Loc_trial=str_sub(Loc_trial,start = 10,end = 21))
+fxeff[1,1]<-"Loc_1_t_1"
+# intercept group
+fxeff$intercept.rr[-1]<-fxeff$intercept.rr[-1]+fxeff$intercept.rr[1] # sum means
+# slope group
+fxeff$slope.rr[-1]<-fxeff$slope.rr[-1]+fxeff$slope.rr[1] 
+
+# Blups rr
+blps.gr<-ranef(mod_gr)
+blps.gr<-blps.gr[[1]]%>%mutate(ID=rownames(blps.gr[[1]]))%>%
+  select(ID,  "(Intercept)", "trial.day"  )
+colnames(blps.gr)<-c("ID", "Eartag_blup.rr","trial.day.rr")
+blps.gr<-left_join(outp1,blps.gr, by =c("Eartag_trial"="ID") )
+blps.gr$Loc_trial<-as.character(blps.gr$Loc_trial)
+blps.gr<-left_join(blps.gr,fxeff,"Loc_trial")
+blps.gr<-mutate(blps.gr,Weight.gain.rr=trial.day.rr+slope.rr)
+```
+```{r}
+fxeff%>%kable(caption = "Intercept and Slope by group")%>%kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F, position = "left",font_size = 12)
+```
+
+#### 3.  Feed Intake by Animal
+
+The animal average daily feed intake  was calculated as:
+
+$$AFI_{i} = \frac{\sum_{j=1}^n X_j}{total\ days\ trial} $$
+
+Where $X_{j}$ is the $jth$ consumed of an individual ($j=1,..n$)
+
+
+```{r, include=FALSE}
+Feed.intake<-trials.data%>%group_by(Loc_trial,Eartag_trial)%>%
+                            summarize(animal.intake=sum(Consumed),
+                               total.days=(max(trial.day)-min(trial.day)),
+                               Average.daily.intake=animal.intake/total.days)%>%
+          ungroup()%>%as.data.frame()
+
+rownames(Feed.intake)<-Feed.intake$Eartag_trial
+```
+
+
+The linear model on Average daily feed intake $$y_{ij}=\mu_{j} + e_{ij}$$ 
+Where: $y_{ij}$ is teh Average feed intake ($AFI$ kg) of the $ith$ individual $\mu_{j}$ is the contemporary group mean, $e_{ij}$ is the random error for each individual in each group; and $\hat{e_i}=y_i-\hat{\mu}$ is the deviation for the $AFI$ of the $ith$ animal with respect to the estimated group mean.
+
+```{r, include=FALSE}
+lmod.feed.intake<-lm(Average.daily.intake ~ Loc_trial-1, data = Feed.intake)
+resi.feed.intake<-as.data.frame(lmod.feed.intake$residuals)%>%
+  mutate(., feed.intake.fitloc=lmod.feed.intake$residuals,
+         Eartag_trial=rownames(.))%>%select(feed.intake.fitloc,Eartag_trial)
+Feed.intake<-left_join(Feed.intake,resi.feed.intake, by="Eartag_trial")
+Feed.intake$Loc_trial<-as.character(Feed.intake$Loc_trial)
+# output file:weight gain, feed intake, Blups 
+ADGs.FI.BLUPs<-left_join(blps.gr,Feed.intake, by= c("Eartag_trial","Loc_trial", "total.days"))
+
+```
+
+```{r}
+summary(lmod.feed.intake)$coefficients%>%as.data.frame()%>%kable(caption = "Estimated feed intake by location")%>%kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F, position = "left",font_size = 12)
+```
+
+### 4. Daily feeder Occupation time
+
+The animal Daily feeder Occupation time  was calculated as:
+
+$$AFO_{i} = \frac{\sum_{j=1}^n X_j}{total\ days\ trial} $$
+
+Where $X_{j}$ is the $jth$ time of occupation event of an individual in minutes ($j=1,..n$)
+
+
+```{r, include=FALSE}
+AFO<-trials.data%>%group_by(Loc_trial,Eartag_trial)%>%
+                            summarize(animal.AFO=sum(visit.length),
+                               total.days=(max(trial.day)-min(trial.day)),
+                               AFO=animal.AFO/total.days)%>%
+          ungroup()%>%as.data.frame()
+
+rownames(AFO)<-AFO$Eartag_trial
+```
+
+The linear model on Average daily feed intake $$y_{ij}=\mu_{j} + e_{ij}$$ 
+Where: $y_{ij}$ is Average Daily feeder occupation time ($AFO_i$ min) of the $ith$ individual $\mu_{j}$ is the contemporary group mean, $e_{ij}$ is the random error for each individual in each group; and $\hat{e_i}=y_i-\hat{\mu}$ is the deviation for the $ADFO$ of the $ith$ animal with respect to the estimated group mean.
+
+```{r, include=FALSE}
+lmod.AFO<-lm(AFO ~ Loc_trial-1, data = AFO)
+resi.AFO<-as.data.frame(lmod.AFO$residuals)%>%
+  mutate(., AFO.fitloc=lmod.AFO$residuals,
+         Eartag_trial=rownames(.))%>%select(AFO.fitloc,Eartag_trial)
+AFO<-left_join(AFO,resi.AFO, by="Eartag_trial")
+AFO$Loc_trial<-as.character(AFO$Loc_trial)
+# output file:weight gain, feed intake, Blups, Average feeder occupation time 
+output.vl<-left_join(ADGs.FI.BLUPs,AFO, by= c("Eartag_trial","Loc_trial", "total.days"))
+
+```
+```{r}
+summary(lmod.AFO)$coefficients%>%as.data.frame()%>%kable(caption = "Estimated Feeder Occupation time by location")%>%kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F, position = "left",font_size = 12)
+```
+### 5. Correlation between Direct and Follower blups of visit length, weight gain, feed intake
+$Estimates\ of\ Pearson,\ coefficients\ correlations\ and\ their\ p-values$
+
+$EarBLUP = animal\ ramdom \ effect\ of \ visit \ duration \ at \ the \ feeder$, $FollBLUP = animal\ ramdom \ effect\ as \ next \ individual \ that \ visited \ the \ feeder$, $WG=Weight\ gain = u_{1i}$, $AFI= Average\ feed\ intake$, $DFO= Average\ feeder\ occupation$
+
+
+```{r, include=FALSE}
+x<-output.vl
+library(Hmisc)
+
+corblups<-function(x){
+  
+  mt<-"pearson"
+    p1<-x%>%select(EarBLUP,FollBLUP,trial.day.rr,feed.intake.fitloc, AFO.fitloc)%>%as.matrix()%>%
+      rcorr(type = mt)
+    pr<-cbind(t(round(p1$r[1:2,3:5],4)),t(round(p1$P[1:2,3:5],4)))
+    colnames(pr)<-c("EarBLUP_Pearson","FollBLUP_Pearson", "Pval_earbpear",
+                    "Pval_follpear")
+    outcor<-as.data.frame(pr)%>%
+   select(EarBLUP_Pearson,Pval_earbpear,FollBLUP_Pearson,Pval_follpear)
+
+colnames(outcor)<-c("EarBLUP_Pearson","Pvalep",
+                    "FollBLUP_Pearson","Pvalfp")
+return(outcor)
+}
+ outcor<-corblups(output.vl)
+ colnames(outcor)<-c("r","Pval", ## EarBLUP
+                    "r","Pval") ## FollBLUP
+ rownames(outcor)<-c("WG", "AFI","DFO")
+
+```
+
+```{r}
+
+kable(outcor, caption = " Estimates correlation between direct and social BLUP's of visit length and weight gain and feed intake, feeder occupation time") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F, 
+               position = "center",font_size = 14) %>%
+  add_header_above(c(" Trait" = 1, "Direct BLUP" = 2, "Follower BLUP" = 2), italic = T,
+                   bold = T)%>%
+  column_spec(1, bold = T)%>%
+  column_spec(c(2,3), background = "#AAEEAA")%>%
+  column_spec(c(4,5), background = "#CCEAAA")%>%
+  row_spec(c(3), bold = T)
+```
