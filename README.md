@@ -7,7 +7,8 @@
 2. [Sources](#sources)
 3. [Technologies](#technologies)
 4. [Run examples](#examples)
-5. [Contact](#contact)
+5. [Acknowledgements](#Acknowledgements])
+6. [Contact](#contact)
 
 ## General info
 This repository contains codes and data needed to reproduce results in the bayesian estimation of covariance componentes fitting
@@ -61,7 +62,7 @@ The files within the above mentioned folders have the follow exentions:
 * *.stan*: Stan program for write the model in a text file
 
 ### Run workflow
-1. Byesian estimation of covariance components
+1. Bayesian estimation of covariance components:
 
 	**1.** To fit the models and obtain the samples for posterior parameters it must execute the code [1_Samplig_parameters.R](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp). **IMPORTANT WARNING:** :warning: it is recommended not to run this code as it takes a long time to run and you need to have access to High Performance Computing.
 
@@ -71,6 +72,15 @@ The files within the above mentioned folders have the follow exentions:
 
 	**4.** To make the model comparison it must execute the code [4_model_comparison.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
 
-2. Calculate the correlation between feeding duration and production traits.
+2. Calculate the correlation between feeding duration and production traits:
 
  	**1.** To obtain the estimates correlations between feeding duration and production traits it must be executed the code [1_Correlations_between_traits.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
+
+
+
+## Acknowledgements
+This work is supported by Agriculture and Food Research Initiative Awards number 2017-67007-26176 and 2014-68004-21952from the USDA National Institute of Food and Agriculture. Additional support for this work was provided by grants from the National Pork Board Award number 17-023, the Michigan Alliance for Animal Agriculture and Michigan State University. The authors acknowledge Kevin Turner and staff at the Swine Teaching and Research Center for the animal care and assistance with data collection
+
+
+## Contact
+Corresponding author: steibelj@msu.edu
