@@ -62,10 +62,15 @@ The files within the above mentioned folders have the follow exentions:
 
 ### Run workflow
 1. Byesian estimation of covariance components
+
 	**1.** To fit the models and obtain the samples for posterior parameters it must execute the code [1_Samplig_parameters.R](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp). **IMPORTANT WARNING:** :warning: it is recommended not to run this code as it takes a long time to run and you need to have access to High Performance Computing.
+
 	**2.** To determine the convergence of the Markov's chains it must execute the code [2_Convergence_Diagnostics.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
+
 	**3.** To obtain the pointwise-loglikelihood and compute the widely available information criterion (WAIC) to compare models it must execute the code [3_pointwise_loglikelihood.R](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp). **IMPORTANT WARNING:** :warning: it is recommended not to run this code as it takes a long time to run and you need to have access to High Performance Computing.
+
 	**4.** To make the model comparison it must execute the code [4_model_comparison.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
 
 2. Calculate the correlation between feeding duration and production traits.
+
  	**1.** To obtain the estimates correlations between feeding duration and production traits it must be executed the code [1_Correlations_between_traits.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
