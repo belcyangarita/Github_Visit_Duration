@@ -75,7 +75,7 @@ The files within the above mentioned folders have the follow exentions:
 
 2. Calculate the correlation between feeding duration and production traits:
 
- 	**1.** To obtain the estimates correlations between feeding duration and production traits it must be executed the code [1_Correlations_between_traits.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
+ 	**1.** To obtain the estimates correlations between feeding duration and production traits it must be executed the code [1_Correlations_between_traits.Rmd](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/2_Correlation_other_traits)
 
 
 
