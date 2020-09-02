@@ -33,3 +33,30 @@ This repository contains codes and data needed to reproduce results in the bayes
 2. Stan language
 
 * Stan website at http://mc-stan.org/
+
+## Run Examples
+The **global workflow** to reproduce the results is:
+
+1. Estimation of covariance componentes fitting three different models on feeding duration trait. 
+2. Calculate the correlation between feeding duration and production traits.
+
+Therefore, **it is very important to follow the order that is described:**
+
+
+### Features
+The repository [Github_Visit_Duration](https://github.com/belcyangarita/Github_Visit_Duration) contains two folder with the principal data file and codes necesaries, which is named with numeric order (1,2, etc) to refer to the execution order of each.
+
+##### Folder:
+* [1_Estimation_varcomp](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/1_Estimation_varcomp)
+* [2_Correlation_other_traits](https://github.com/belcyangarita/Github_Visit_Duration/tree/master/2_Correlation_other_traits)
+
+##### Data file:
+* [trialsdata.Rdata](https://github.com/belcyangarita/Github_Visit_Duration)
+
+The files within the above mentioned folders have the follow exentions:
+* *.R*
+* *.Rmd*
+* *.Rdata*
+* *.rds*
+* *.stan*
+
