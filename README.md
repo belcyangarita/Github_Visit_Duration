@@ -15,8 +15,8 @@ This repository contains codes and data needed to reproduce results in the bayes
  three different models on feeding duration trait and to calculate the correlation between feeding duration and production traits.
 
 ## Sources
- Based on the work from *Angarita Barajas et al.* Estimation of direct and social effects of feeding duration in growing pigs using
-  record from automatic feeding stations.
+ Based on the work from *Angarita Barajas et al.* **Estimation of direct and social effects of feeding duration in growing pigs using
+  record from automatic feeding stations**.
 
 ## Technologies
 1. [R](https://www.r-project.org/) - version 3.5.1
@@ -27,7 +27,7 @@ This repository contains codes and data needed to reproduce results in the bayes
 * loo - version 2.1.0.9001
 * coda - version 0.19-3
 * mcmcplots - version 0.4.3
-* ggmcmc
+* ggmcmc  - version 1.4.1
 * kableExtra - version 1.1.0
 
 2. [Stan](http://mc-stan.org/) language
