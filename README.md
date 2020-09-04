@@ -6,7 +6,7 @@
 1. [General information](#general-information)
 2. [Sources](#sources)
 3. [Technologies](#technologies)
-4. [Run examples](#examples)
+4. [Run examples](#Run examples)
 5. [Acknowledgements](#Acknowledgements])
 6. [Contact](#contact)
 
@@ -35,7 +35,7 @@ This repository contains codes and data needed to reproduce results in the bayes
 * Stan website at http://mc-stan.org/
 
 
-## Run Examples
+## Run examples
 The **global workflow** to reproduce the results is:
 
 1. Estimation of covariance componentes fitting three different models on feeding duration trait. 
